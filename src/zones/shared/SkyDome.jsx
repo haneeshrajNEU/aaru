@@ -23,10 +23,12 @@ void main() {
 `;
 
 // The "glass" of the snow globe — a huge inverted sphere rendered from the
-// inside with a soft vertical gradient, standing in for a normal skybox so
-// the world reads as an enclosed dome rather than an open horizon. The
-// bottom color should match the zone's fog color so the seam disappears.
-export default function SkyDome({ radius = 70, topColor = "#6a5a9c", bottomColor = "#cdd8e8" }) {
+// inside, standing in for a normal skybox so the world reads as an enclosed
+// dome rather than an open horizon. Pass a pre-loaded equirectangular `map`
+// texture for a painted sky instead of the default procedural gradient
+// (the bottom gradient color should match the zone's fog color either way,
+// so the seam disappears).
+export default function SkyDome({ radius = 70, topColor = "#6a5a9c", bottomColor = "#cdd8e8", map }) {
   const uniforms = useMemo(
     () => ({
       topColor: { value: new THREE.Color(topColor) },
@@ -40,14 +42,18 @@ export default function SkyDome({ radius = 70, topColor = "#6a5a9c", bottomColor
   return (
     <mesh renderOrder={-2}>
       <sphereGeometry args={[radius, 32, 16]} />
-      <shaderMaterial
-        uniforms={uniforms}
-        vertexShader={vertexShader}
-        fragmentShader={fragmentShader}
-        side={THREE.BackSide}
-        depthWrite={false}
-        fog={false}
-      />
+      {map ? (
+        <meshBasicMaterial map={map} side={THREE.BackSide} depthWrite={false} fog={false} toneMapped={false} />
+      ) : (
+        <shaderMaterial
+          uniforms={uniforms}
+          vertexShader={vertexShader}
+          fragmentShader={fragmentShader}
+          side={THREE.BackSide}
+          depthWrite={false}
+          fog={false}
+        />
+      )}
     </mesh>
   );
 }

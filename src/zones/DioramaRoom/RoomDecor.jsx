@@ -1,8 +1,13 @@
+import { useTexture } from "@react-three/drei";
 import { getToonGradientMap } from "../../systems/toonGradient";
 
-const POSTER_COLORS = ["#ff9fc7", "#9fd8ff", "#ffe08a", "#c7a8ff", "#9fe8c7"];
+const POSTER_PATHS = [
+  "/textures/poster-kpop-1.png",
+  "/textures/poster-kpop-2.png",
+  "/textures/poster-kpop-3.png",
+];
 
-function Poster({ position, rotationY = 0, color, size = [0.9, 1.2] }) {
+function Poster({ position, rotationY = 0, map, size = [0.9, 1.2] }) {
   const gradientMap = getToonGradientMap();
   return (
     <group position={position} rotation={[0, rotationY, 0]}>
@@ -12,7 +17,7 @@ function Poster({ position, rotationY = 0, color, size = [0.9, 1.2] }) {
       </mesh>
       <mesh position={[0, 0, 0.03]}>
         <boxGeometry args={[size[0], size[1], 0.02]} />
-        <meshToonMaterial color={color} gradientMap={gradientMap} />
+        <meshToonMaterial map={map} gradientMap={gradientMap} />
       </mesh>
     </group>
   );
@@ -65,6 +70,7 @@ function FloorLamp({ position }) {
 // backstage room instead of four bare walls around the puzzle pedestals.
 export default function RoomDecor() {
   const gradientMap = getToonGradientMap();
+  const posterMaps = useTexture(POSTER_PATHS);
 
   return (
     <>
@@ -77,15 +83,15 @@ export default function RoomDecor() {
         <meshToonMaterial color="#c9a05a" gradientMap={gradientMap} />
       </mesh>
 
-      <Poster position={[-6, 2.5, -9.23]} color={POSTER_COLORS[0]} />
-      <Poster position={[-2.6, 2.6, -9.23]} color={POSTER_COLORS[1]} />
-      <Poster position={[2.6, 2.6, -9.23]} color={POSTER_COLORS[2]} />
-      <Poster position={[6, 2.5, -9.23]} color={POSTER_COLORS[3]} />
+      <Poster position={[-6, 2.5, -9.23]} map={posterMaps[0]} />
+      <Poster position={[-2.6, 2.6, -9.23]} map={posterMaps[1]} />
+      <Poster position={[2.6, 2.6, -9.23]} map={posterMaps[2]} />
+      <Poster position={[6, 2.5, -9.23]} map={posterMaps[0]} />
 
-      <Poster position={[-7.98, 2.5, -4]} rotationY={Math.PI / 2} color={POSTER_COLORS[4]} />
-      <Poster position={[-7.98, 2.5, 1.5]} rotationY={Math.PI / 2} color={POSTER_COLORS[1]} />
-      <Poster position={[7.98, 2.5, -4]} rotationY={-Math.PI / 2} color={POSTER_COLORS[2]} />
-      <Poster position={[7.98, 2.5, 1.5]} rotationY={-Math.PI / 2} color={POSTER_COLORS[0]} />
+      <Poster position={[-7.98, 2.5, -4]} rotationY={Math.PI / 2} map={posterMaps[1]} />
+      <Poster position={[-7.98, 2.5, 1.5]} rotationY={Math.PI / 2} map={posterMaps[2]} />
+      <Poster position={[7.98, 2.5, -4]} rotationY={-Math.PI / 2} map={posterMaps[0]} />
+      <Poster position={[7.98, 2.5, 1.5]} rotationY={-Math.PI / 2} map={posterMaps[1]} />
 
       <PottedPlant position={[-7, 0, 4.8]} />
       <PottedPlant position={[-7, 0, -8.6]} />

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTexture } from "@react-three/drei";
 import { useLevelStore } from "../../store/useLevelStore";
 import { useGameStore } from "../../store/useGameStore";
 import { transitionToZone } from "../../systems/zoneTransition";
@@ -13,6 +14,7 @@ import LoreBook from "./LoreBook";
 import Diorama from "./Diorama";
 import RoomDecor from "./RoomDecor";
 import MagicDustMotes from "./MagicDustMotes";
+import { tileTexture } from "../../systems/textureUtils";
 
 const DIORAMAS = [
   { position: [-5, 0, -7.5], label: "Center Stage", correctRotation: 0, correctScale: 1 },
@@ -35,6 +37,7 @@ export default function DioramaZone() {
   const gradientMap = getToonGradientMap();
   const grantedRef = useRef(flags.dioramaRewardGiven);
   const [burstKey, setBurstKey] = useState(0);
+  const floorMap = useTexture("/textures/wood-floor-warm.png", tileTexture(6, 6));
 
   useEffect(() => {
     useLevelStore.getState().setLevel({
@@ -87,7 +90,7 @@ export default function DioramaZone() {
       {/* floor */}
       <mesh position={[0, -0.05, -1.5]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[16, 15]} />
-        <meshToonMaterial color="#8a6a56" gradientMap={gradientMap} />
+        <meshToonMaterial map={floorMap} gradientMap={gradientMap} />
       </mesh>
       {/* back + side walls */}
       <mesh position={[0, 2, -9.4]}>

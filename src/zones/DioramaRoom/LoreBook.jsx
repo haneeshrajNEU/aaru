@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+import { useTexture } from "@react-three/drei";
 import { getToonGradientMap } from "../../systems/toonGradient";
 import { registerInteractable } from "../../systems/interactables";
 import { useUIStore } from "../../store/useUIStore";
@@ -9,6 +10,7 @@ import { PLAYER_NAME } from "../../config/constants";
 
 export default function LoreBook({ position }) {
   const gradientMap = getToonGradientMap();
+  const coverMap = useTexture("/textures/book-cover-lore.png");
   const bookRef = useRef();
 
   useEffect(
@@ -38,7 +40,7 @@ export default function LoreBook({ position }) {
     <Pedestal position={position} color="#c9b896">
       <mesh ref={bookRef} position={[0, 1.0, 0]} rotation={[-0.3, 0, 0]}>
         <boxGeometry args={[0.4, 0.06, 0.3]} />
-        <meshToonMaterial color="#8a4a3a" gradientMap={gradientMap} />
+        <meshToonMaterial map={coverMap} gradientMap={gradientMap} />
       </mesh>
     </Pedestal>
   );

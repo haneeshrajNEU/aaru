@@ -35,7 +35,7 @@ function DoorLeaf({ x, hingeLeft }) {
 // double doors set into a gap in the front wall, and a lit marquee above —
 // so the alley reads as an enclosed indoor space instead of a lit patch of
 // open ground.
-export default function BowlingAlleyShell({ bounds }) {
+export default function BowlingAlleyShell({ bounds, wallMap }) {
   const gradientMap = getToonGradientMap();
   const { minX, maxX, minZ, maxZ } = bounds;
   const width = maxX - minX + 0.3;
@@ -59,27 +59,27 @@ export default function BowlingAlleyShell({ bounds }) {
       {/* back wall */}
       <mesh position={[0, WALL_HEIGHT / 2, minZ - 0.15]}>
         <boxGeometry args={[width, WALL_HEIGHT, 0.3]} />
-        <meshToonMaterial color={WALL_COLOR} gradientMap={gradientMap} />
+        <meshToonMaterial map={wallMap} color={wallMap ? "#ffffff" : WALL_COLOR} gradientMap={gradientMap} />
       </mesh>
 
       {/* side walls */}
       <mesh position={[leftEdge, WALL_HEIGHT / 2, centerZ]}>
         <boxGeometry args={[0.3, WALL_HEIGHT, depth]} />
-        <meshToonMaterial color={WALL_COLOR} gradientMap={gradientMap} />
+        <meshToonMaterial map={wallMap} color={wallMap ? "#ffffff" : WALL_COLOR} gradientMap={gradientMap} />
       </mesh>
       <mesh position={[rightEdge, WALL_HEIGHT / 2, centerZ]}>
         <boxGeometry args={[0.3, WALL_HEIGHT, depth]} />
-        <meshToonMaterial color={WALL_COLOR} gradientMap={gradientMap} />
+        <meshToonMaterial map={wallMap} color={wallMap ? "#ffffff" : WALL_COLOR} gradientMap={gradientMap} />
       </mesh>
 
       {/* front wall, split around the entrance */}
       <mesh position={[leftEdge + leftDoorWidth / 2, WALL_HEIGHT / 2, frontZ]}>
         <boxGeometry args={[leftDoorWidth, WALL_HEIGHT, 0.3]} />
-        <meshToonMaterial color={WALL_COLOR} gradientMap={gradientMap} />
+        <meshToonMaterial map={wallMap} color={wallMap ? "#ffffff" : WALL_COLOR} gradientMap={gradientMap} />
       </mesh>
       <mesh position={[DOOR_HALF + rightDoorWidth / 2, WALL_HEIGHT / 2, frontZ]}>
         <boxGeometry args={[rightDoorWidth, WALL_HEIGHT, 0.3]} />
-        <meshToonMaterial color={WALL_COLOR} gradientMap={gradientMap} />
+        <meshToonMaterial map={wallMap} color={wallMap ? "#ffffff" : WALL_COLOR} gradientMap={gradientMap} />
       </mesh>
 
       {/* double doors filling the entrance gap */}

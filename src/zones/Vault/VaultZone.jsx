@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTexture } from "@react-three/drei";
 import { useLevelStore } from "../../store/useLevelStore";
 import { useGameStore } from "../../store/useGameStore";
 import { useUIStore } from "../../store/useUIStore";
@@ -16,6 +17,7 @@ import LetterPickup from "./LetterPickup";
 import RainbowArc from "./RainbowArc";
 import RainbowBridge from "./RainbowBridge";
 import BookStand from "./BookStand";
+import { tileTexture } from "../../systems/textureUtils";
 
 const SUNFLOWER_POS = [0, 0.2, -9];
 const SLOTS = [
@@ -62,6 +64,7 @@ export default function VaultZone() {
   const bloomedRef = useRef(flags.sunflowerBloomed);
   const [letterRevealed, setLetterRevealed] = useState(flags.letterFound);
   const photoTimerRef = useRef(null);
+  const dirtMap = useTexture("/textures/vault-dirt-path.png", tileTexture(16, 16));
 
   const allFilled = SLOTS.every((s) => flags.vaultSlots[s.key]);
 
@@ -130,7 +133,7 @@ export default function VaultZone() {
 
       <SkyDome bottomColor="#ffe3b0" topColor="#ffb37a" radius={80} />
 
-      <Ground size={50} color="#b8a888" position={[0, -0.01, -20]} />
+      <Ground size={50} color="#b8a888" position={[0, -0.01, -20]} map={dirtMap} />
       <WiltedField center={SUNFLOWER_POS} radius={9} count={140} bloomed={flags.sunflowerBloomed} />
       <DeadFlowers center={SUNFLOWER_POS} radius={9} count={22} bloomed={flags.sunflowerBloomed} />
       <EmberParticles center={SUNFLOWER_POS} radius={10} height={5} count={45} bloomed={flags.sunflowerBloomed} />

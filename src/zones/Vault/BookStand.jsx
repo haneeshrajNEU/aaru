@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+import { useTexture } from "@react-three/drei";
 import { getToonGradientMap } from "../../systems/toonGradient";
 import Pedestal from "../shared/Pedestal";
 
@@ -6,6 +8,25 @@ import Pedestal from "../shared/Pedestal";
 // separately, hovering just above this.
 export default function BookStand({ position }) {
   const gradientMap = getToonGradientMap();
+  const baseMap = useTexture("/textures/book-pages-open.png");
+
+  // One "open book" image split across both pages — clone so each half can
+  // have its own UV offset without the two sharing (and fighting over) a
+  // single texture instance.
+  const leftMap = useMemo(() => {
+    const t = baseMap.clone();
+    t.needsUpdate = true;
+    t.repeat.set(0.5, 1);
+    t.offset.set(0, 0);
+    return t;
+  }, [baseMap]);
+  const rightMap = useMemo(() => {
+    const t = baseMap.clone();
+    t.needsUpdate = true;
+    t.repeat.set(0.5, 1);
+    t.offset.set(0.5, 0);
+    return t;
+  }, [baseMap]);
 
   return (
     <Pedestal position={position} color="#e7ddcf">
@@ -13,12 +34,12 @@ export default function BookStand({ position }) {
         {/* left page */}
         <mesh position={[-0.16, 0, 0]} rotation={[0, 0.35, 0]}>
           <boxGeometry args={[0.32, 0.02, 0.24]} />
-          <meshToonMaterial color="#fdf6e3" gradientMap={gradientMap} />
+          <meshToonMaterial map={leftMap} gradientMap={gradientMap} />
         </mesh>
         {/* right page */}
         <mesh position={[0.16, 0, 0]} rotation={[0, -0.35, 0]}>
           <boxGeometry args={[0.32, 0.02, 0.24]} />
-          <meshToonMaterial color="#fdf6e3" gradientMap={gradientMap} />
+          <meshToonMaterial map={rightMap} gradientMap={gradientMap} />
         </mesh>
         {/* spine */}
         <mesh position={[0, -0.01, 0]}>

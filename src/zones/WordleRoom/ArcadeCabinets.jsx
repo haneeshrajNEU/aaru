@@ -1,12 +1,12 @@
+import { useTexture } from "@react-three/drei";
 import { getToonGradientMap } from "../../systems/toonGradient";
+import { tileTexture } from "../../systems/textureUtils";
 
 const MARQUEE_COLORS = ["#ff6ad5", "#6affe8", "#ffe86a", "#8a6aff"];
-const SCREEN_COLORS = ["#2fe0ff", "#ff5ac1", "#8aff6a", "#ffcf5a"];
 
-function Cabinet({ position, rotationY, variant = 0 }) {
+function Cabinet({ position, rotationY, variant = 0, screenMap }) {
   const gradientMap = getToonGradientMap();
   const marquee = MARQUEE_COLORS[variant % MARQUEE_COLORS.length];
-  const screen = SCREEN_COLORS[variant % SCREEN_COLORS.length];
 
   return (
     <group position={position} rotation={[0, rotationY, 0]}>
@@ -18,7 +18,7 @@ function Cabinet({ position, rotationY, variant = 0 }) {
       {/* screen */}
       <mesh position={[0, 1.15, 0.36]}>
         <planeGeometry args={[0.5, 0.4]} />
-        <meshBasicMaterial color={screen} toneMapped={false} />
+        <meshBasicMaterial map={screenMap} toneMapped={false} />
       </mesh>
       {/* marquee */}
       <mesh position={[0, 1.52, 0.18]} rotation={[-0.35, 0, 0]}>
@@ -44,9 +44,8 @@ function Cabinet({ position, rotationY, variant = 0 }) {
   );
 }
 
-function ClawMachine({ position }) {
+function ClawMachine({ position, plushMap }) {
   const gradientMap = getToonGradientMap();
-  const plushColors = ["#ff9fc7", "#9fd8ff", "#ffe08a", "#c7a8ff"];
 
   return (
     <group position={position}>
@@ -60,10 +59,10 @@ function ClawMachine({ position }) {
         <meshPhysicalMaterial color="#bfe3ff" transparent opacity={0.25} roughness={0.05} />
       </mesh>
       {/* plush pile */}
-      {plushColors.map((c, i) => (
+      {[0, 1, 2, 3].map((i) => (
         <mesh key={i} position={[(i - 1.5) * 0.16, 0.45, 0.1]}>
           <sphereGeometry args={[0.1, 8, 8]} />
-          <meshToonMaterial color={c} gradientMap={gradientMap} />
+          <meshToonMaterial map={plushMap} gradientMap={gradientMap} />
         </mesh>
       ))}
       {/* marquee */}
@@ -113,16 +112,25 @@ const ROW_ZS = [-6, -3, 0, 3];
 // a claw machine, and a prize counter — so the puzzle room reads as a real
 // arcade floor instead of a terminal sitting in an empty hall.
 export default function ArcadeCabinets() {
+  const screenMap = useTexture("/textures/arcade-cabinet-screen.png");
+  const plushMap = useTexture("/textures/plush-fuzzy.png", tileTexture(2, 2));
+
   return (
     <>
       {ROW_ZS.map((z, i) => (
-        <Cabinet key={`l${i}`} position={[LEFT_X, 0, z]} rotationY={Math.PI / 2} variant={i} />
+        <Cabinet key={`l${i}`} position={[LEFT_X, 0, z]} rotationY={Math.PI / 2} variant={i} screenMap={screenMap} />
       ))}
       {ROW_ZS.map((z, i) => (
-        <Cabinet key={`r${i}`} position={[RIGHT_X, 0, z]} rotationY={-Math.PI / 2} variant={i + 2} />
+        <Cabinet
+          key={`r${i}`}
+          position={[RIGHT_X, 0, z]}
+          rotationY={-Math.PI / 2}
+          variant={i + 2}
+          screenMap={screenMap}
+        />
       ))}
 
-      <ClawMachine position={[5.4, 0, 4.3]} />
+      <ClawMachine position={[5.4, 0, 4.3]} plushMap={plushMap} />
       <PrizeCounter position={[-5.2, 0, 4.3]} />
     </>
   );

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useTexture } from "@react-three/drei";
 import { useLevelStore } from "../../store/useLevelStore";
 import { useGameStore } from "../../store/useGameStore";
 import { useUIStore } from "../../store/useUIStore";
@@ -15,6 +16,7 @@ import BarCounter from "./BarCounter";
 import BowlingGame from "./BowlingGame";
 import BowlingAlleyShell from "./BowlingAlleyShell";
 import LoungeDecor from "./LoungeDecor";
+import { tileTexture } from "../../systems/textureUtils";
 
 const ROOM_BOUNDS = { minX: -9, maxX: 9, minZ: -6.8, maxZ: 6 };
 const BAR_POS = [-6, 0, 2];
@@ -37,6 +39,8 @@ export default function BarBowlingZone() {
   const setGuideTarget = useGameStore((s) => s.setGuideTarget);
   const gradientMap = getToonGradientMap();
   const dialogueStarted = useRef(false);
+  const laneMap = useTexture("/textures/bowling-lane-wood.png", tileTexture(1, 5));
+  const wallMap = useTexture("/textures/wall-plaster-purple.png", tileTexture(6, 1));
 
   const allDropletsCollected = flags.waterDropletsCollected.every(Boolean);
   const canLeave = flags.haneeshDefeated && allDropletsCollected;
@@ -90,12 +94,12 @@ export default function BarBowlingZone() {
       <pointLight position={[LANE_ORIGIN[0], 3, LANE_ORIGIN[2] - 3]} intensity={0.4} color="#bfe3ff" distance={12} />
 
       <Ground size={22} color="#3a2f52" />
-      <BowlingAlleyShell bounds={ROOM_BOUNDS} />
+      <BowlingAlleyShell bounds={ROOM_BOUNDS} wallMap={wallMap} />
 
       {/* lane strip */}
       <mesh position={[LANE_ORIGIN[0], 0.01, LANE_ORIGIN[2] - 3.3]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[1.5, 7.4]} />
-        <meshToonMaterial color="#caa876" gradientMap={gradientMap} />
+        <meshToonMaterial map={laneMap} gradientMap={gradientMap} />
       </mesh>
 
       <BarCounter position={BAR_POS} />

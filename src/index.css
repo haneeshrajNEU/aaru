@@ -804,12 +804,24 @@ button {
 
 .letter-card {
   width: min(560px, 92vw);
-  background: linear-gradient(170deg, #fffaf0, #ffe8d6);
+  background-image: url("/textures/final-letter-bg.png");
+  background-size: cover;
+  background-position: center;
+  background-color: #fffaf0;
   border-radius: 4px;
-  padding: 48px 44px;
+  padding: 26px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
   font-family: "Baloo 2", cursive, sans-serif;
   position: relative;
+}
+/* The text sits on its own translucent panel inset within the card,
+   rather than directly on the illustration — that way it stays legible
+   no matter how wide the illustrated sunflower border actually renders,
+   instead of us having to guess an exact padding percentage to dodge it. */
+.letter-content {
+  background: rgba(255, 250, 240, 0.9);
+  border-radius: 12px;
+  padding: 30px 34px;
 }
 .letter-card h2 {
   color: #a35d1f;

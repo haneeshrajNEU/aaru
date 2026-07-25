@@ -41,13 +41,15 @@ export default function FinalLetterModal() {
         ))}
       </div>
       <div className="letter-card" onClick={(e) => e.stopPropagation()}>
-        <h2>{BIRTHDAY_LETTER.heading}</h2>
-        <div className="letter-body">{BIRTHDAY_LETTER.body}</div>
-        <div className="signoff">{BIRTHDAY_LETTER.signoff}</div>
-        <div className="modal-actions">
-          <button className="btn-primary" onClick={close}>
-            Close
-          </button>
+        <div className="letter-content">
+          <h2>{BIRTHDAY_LETTER.heading}</h2>
+          <div className="letter-body">{BIRTHDAY_LETTER.body}</div>
+          <div className="signoff">{BIRTHDAY_LETTER.signoff}</div>
+          <div className="modal-actions">
+            <button className="btn-primary" onClick={close}>
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTexture } from "@react-three/drei";
 import { useLevelStore } from "../../store/useLevelStore";
 import { useGameStore } from "../../store/useGameStore";
 import { useWordleStore } from "../../store/useWordleStore";
@@ -17,6 +18,7 @@ import ArcadeShell from "./ArcadeShell";
 import ArcadeFloor from "./ArcadeFloor";
 import ArcadeCabinets from "./ArcadeCabinets";
 import ArcadeGlow from "./ArcadeGlow";
+import { tileTexture } from "../../systems/textureUtils";
 
 const TERMINAL_POS = [0, 0, -5];
 const REWARD_POS = [0, 1, -3];
@@ -26,6 +28,7 @@ const ARCADE_BOUNDS = { minX: -7.3, maxX: 7.3, minZ: -8.3, maxZ: 5.7 };
 
 function Terminal({ position }) {
   const gradientMap = getToonGradientMap();
+  const screenMap = useTexture("/textures/arcade-cabinet-screen.png");
   const solvedFlag = useGameStore((s) => s.flags.wordleSolved);
 
   useEffect(
@@ -52,7 +55,7 @@ function Terminal({ position }) {
       {/* screen */}
       <mesh position={[0, 1.15, 0.41]}>
         <planeGeometry args={[0.8, 0.5]} />
-        <meshBasicMaterial color="#8ec9ff" toneMapped={false} />
+        <meshBasicMaterial map={screenMap} toneMapped={false} />
       </mesh>
       {/* marquee */}
       <mesh position={[0, 1.65, 0.2]} rotation={[-0.35, 0, 0]}>
@@ -87,6 +90,7 @@ export default function WordleZone() {
   const solvedEphemeral = useWordleStore((s) => s.solved);
   const rewardGrantedRef = useRef(flags.wordleRewardGiven);
   const [burstKey, setBurstKey] = useState(0);
+  const wallMap = useTexture("/textures/wall-plaster-purple.png", tileTexture(6, 1));
 
   useEffect(() => {
     useLevelStore.getState().setLevel({
@@ -141,7 +145,7 @@ export default function WordleZone() {
       <pointLight position={[0, 4, -4]} intensity={0.45} color="#8ec9ff" distance={16} />
 
       <Ground size={16} color="#2a3352" />
-      <ArcadeShell bounds={ARCADE_BOUNDS} />
+      <ArcadeShell bounds={ARCADE_BOUNDS} wallMap={wallMap} />
       <ArcadeFloor bounds={ARCADE_BOUNDS} />
       <ArcadeCabinets />
       <ArcadeGlow bounds={ARCADE_BOUNDS} />

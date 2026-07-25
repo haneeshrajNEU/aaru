@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { useTexture } from "@react-three/drei";
+import * as THREE from "three";
 import { useLevelStore } from "../../store/useLevelStore";
 import { useGameStore } from "../../store/useGameStore";
 import { useUIStore } from "../../store/useUIStore";
@@ -13,6 +15,7 @@ import SkyDome from "../shared/SkyDome";
 import Stars from "../shared/Stars";
 import Sunflower from "../shared/Sunflower";
 import Portal from "../shared/Portal";
+import { tileTexture } from "../../systems/textureUtils";
 import { PLAYER_NAME } from "../../config/constants";
 
 const SUNFLOWER_POS = [0, 0, -14];
@@ -24,6 +27,10 @@ export default function MeadowZone() {
   const setFlag = useGameStore((s) => s.setFlag);
   const setQuest = useGameStore((s) => s.setQuest);
   const setGuideTarget = useGameStore((s) => s.setGuideTarget);
+  const grassMap = useTexture("/textures/grass-wilted.png", tileTexture(14, 14));
+  const skyMap = useTexture("/textures/sky-dusk-clouds.png", (t) => {
+    t.wrapS = THREE.RepeatWrapping;
+  });
 
   useEffect(() => {
     useLevelStore.getState().setLevel({
@@ -56,10 +63,10 @@ export default function MeadowZone() {
       <ambientLight intensity={0.75} color="#e8ecff" />
       <directionalLight position={[8, 12, 4]} intensity={1.1} color="#fff3d9" />
 
-      <SkyDome />
+      <SkyDome map={skyMap} />
       <Stars />
 
-      <Ground color="#c9cdb0" />
+      <Ground color="#c9cdb0" map={grassMap} />
       <WiltedField center={[0, 0, -4]} radius={16} count={110} bloomed={false} />
       <DeadFlowers center={[0, 0, -4]} radius={16} count={20} />
       <EmberParticles center={[0, 0, -4]} radius={18} height={6} count={55} />

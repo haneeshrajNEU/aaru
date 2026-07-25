@@ -10,7 +10,7 @@ const GAP_HALF = 3.2;
 // The building shell for the arcade/puzzle room — three walls and a
 // ceiling with a pink neon backlight strip, and a gap in the back wall
 // wide enough for the bridge corridor to pass through once revealed.
-export default function ArcadeShell({ bounds }) {
+export default function ArcadeShell({ bounds, wallMap }) {
   const gradientMap = getToonGradientMap();
   const { minX, maxX, minZ, maxZ } = bounds;
   const width = maxX - minX + 0.3;
@@ -41,24 +41,24 @@ export default function ArcadeShell({ bounds }) {
       {leftSegWidth > 0 && (
         <mesh position={[leftEdge + leftSegWidth / 2, WALL_HEIGHT / 2, backZ]}>
           <boxGeometry args={[leftSegWidth, WALL_HEIGHT, 0.3]} />
-          <meshToonMaterial color={WALL_COLOR} gradientMap={gradientMap} />
+          <meshToonMaterial map={wallMap} color={wallMap ? "#ffffff" : WALL_COLOR} gradientMap={gradientMap} />
         </mesh>
       )}
       {rightSegWidth > 0 && (
         <mesh position={[GAP_HALF + rightSegWidth / 2, WALL_HEIGHT / 2, backZ]}>
           <boxGeometry args={[rightSegWidth, WALL_HEIGHT, 0.3]} />
-          <meshToonMaterial color={WALL_COLOR} gradientMap={gradientMap} />
+          <meshToonMaterial map={wallMap} color={wallMap ? "#ffffff" : WALL_COLOR} gradientMap={gradientMap} />
         </mesh>
       )}
 
       {/* side walls */}
       <mesh position={[leftEdge, WALL_HEIGHT / 2, centerZ]}>
         <boxGeometry args={[0.3, WALL_HEIGHT, depth]} />
-        <meshToonMaterial color={WALL_COLOR} gradientMap={gradientMap} />
+        <meshToonMaterial map={wallMap} color={wallMap ? "#ffffff" : WALL_COLOR} gradientMap={gradientMap} />
       </mesh>
       <mesh position={[rightEdge, WALL_HEIGHT / 2, centerZ]}>
         <boxGeometry args={[0.3, WALL_HEIGHT, depth]} />
-        <meshToonMaterial color={WALL_COLOR} gradientMap={gradientMap} />
+        <meshToonMaterial map={wallMap} color={wallMap ? "#ffffff" : WALL_COLOR} gradientMap={gradientMap} />
       </mesh>
     </>
   );

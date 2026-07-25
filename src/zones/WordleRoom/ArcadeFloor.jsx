@@ -1,56 +1,39 @@
 import { useEffect, useMemo, useRef } from "react";
+import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { getToonGradientMap } from "../../systems/toonGradient";
+import { tileTexture } from "../../systems/textureUtils";
 
-const CELL = 1.4;
-const COLOR_A = "#241a3d";
-const COLOR_B = "#2f2350";
 const ACCENT = "#ff6ad5";
+const CELL = 1.4;
 
-// A loud checkerboard-with-neon-diamonds carpet laid over the ground plane,
-// the way real arcades tend to overdo their flooring.
+// The arcade carpet — a real tiled texture, plus a scatter of neon diamond
+// accents laid over it for a bit of extra sparkle.
 export default function ArcadeFloor({ bounds }) {
-  const meshRef = useRef();
   const accentRef = useRef();
   const dummy = useMemo(() => new THREE.Object3D(), []);
   const gradientMap = getToonGradientMap();
+  const { minX, maxX, minZ, maxZ } = bounds;
+  const width = maxX - minX;
+  const depth = maxZ - minZ;
+  const centerX = (minX + maxX) / 2;
+  const centerZ = (minZ + maxZ) / 2;
 
-  const { tiles, accents } = useMemo(() => {
-    const { minX, maxX, minZ, maxZ } = bounds;
-    const cols = Math.floor((maxX - minX) / CELL);
-    const rows = Math.floor((maxZ - minZ) / CELL);
-    const startX = minX + ((maxX - minX) - cols * CELL) / 2 + CELL / 2;
-    const startZ = minZ + ((maxZ - minZ) - rows * CELL) / 2 + CELL / 2;
-    const t = [];
+  const carpetMap = useTexture("/textures/arcade-carpet.png", tileTexture(width / 3, depth / 3));
+
+  const accents = useMemo(() => {
+    const cols = Math.floor(width / CELL);
+    const rows = Math.floor(depth / CELL);
+    const startX = minX + (width - cols * CELL) / 2 + CELL / 2;
+    const startZ = minZ + (depth - rows * CELL) / 2 + CELL / 2;
     const a = [];
     for (let i = 0; i < cols; i++) {
       for (let j = 0; j < rows; j++) {
-        const x = startX + i * CELL;
-        const z = startZ + j * CELL;
-        t.push({ x, z, dark: (i + j) % 2 === 0 });
-        if ((i * 7 + j * 3) % 11 === 0) a.push({ x, z });
+        if ((i * 7 + j * 3) % 11 === 0) a.push({ x: startX + i * CELL, z: startZ + j * CELL });
       }
     }
-    return { tiles: t, accents: a };
+    return a;
   }, [bounds]);
-
-  useEffect(() => {
-    const mesh = meshRef.current;
-    if (!mesh) return;
-    const colorA = new THREE.Color(COLOR_A);
-    const colorB = new THREE.Color(COLOR_B);
-    for (let i = 0; i < tiles.length; i++) {
-      const it = tiles[i];
-      dummy.position.set(it.x, 0.006, it.z);
-      dummy.rotation.set(-Math.PI / 2, 0, 0);
-      dummy.scale.set(CELL * 0.96, CELL * 0.96, 1);
-      dummy.updateMatrix();
-      mesh.setMatrixAt(i, dummy.matrix);
-      mesh.setColorAt(i, it.dark ? colorA : colorB);
-    }
-    mesh.instanceMatrix.needsUpdate = true;
-    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-  }, [tiles]);
 
   useEffect(() => {
     const mesh = accentRef.current;
@@ -68,10 +51,10 @@ export default function ArcadeFloor({ bounds }) {
 
   return (
     <>
-      <instancedMesh ref={meshRef} args={[null, null, tiles.length]} frustumCulled={false}>
-        <planeGeometry args={[1, 1]} />
-        <meshToonMaterial gradientMap={gradientMap} />
-      </instancedMesh>
+      <mesh position={[centerX, 0.006, centerZ]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[width, depth]} />
+        <meshToonMaterial map={carpetMap} gradientMap={gradientMap} />
+      </mesh>
       <instancedMesh ref={accentRef} args={[null, null, accents.length]} frustumCulled={false}>
         <planeGeometry args={[1, 1]} />
         <meshBasicMaterial color={ACCENT} toneMapped={false} transparent opacity={0.55} />
