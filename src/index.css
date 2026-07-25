@@ -245,17 +245,55 @@ button {
   }
 }
 
-.modal-card h2 {
+.modal-card h2,
+.side-panel h2 {
   margin: 0 0 14px;
   color: #a35d1f;
   font-size: 24px;
 }
 
-.modal-card .modal-body {
+.modal-card .modal-body,
+.side-panel .modal-body {
   font-size: 15px;
   line-height: 1.65;
   white-space: pre-line;
   color: var(--ink);
+}
+
+/* A backdrop with no dark tint, so the 3D scene stays visible while a
+   puzzle's slider panel is open — pairs with .side-panel below. */
+.side-panel-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: auto;
+}
+
+.side-panel {
+  position: fixed;
+  top: 50%;
+  right: 28px;
+  transform: translateY(-50%);
+  width: min(340px, 90vw);
+  max-height: 80vh;
+  overflow-y: auto;
+  background: linear-gradient(160deg, var(--cream), var(--sun-pale));
+  border: 3px solid #fff;
+  border-radius: 22px;
+  padding: 26px 28px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  animation: slideInRight 0.25s ease;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
 }
 
 .modal-actions {

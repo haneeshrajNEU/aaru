@@ -13,11 +13,16 @@ import Ground from "../shared/Ground";
 import Portal from "../shared/Portal";
 import RewardBurst from "../shared/RewardBurst";
 import Pedestal from "../shared/Pedestal";
+import ArcadeShell from "./ArcadeShell";
+import ArcadeFloor from "./ArcadeFloor";
+import ArcadeCabinets from "./ArcadeCabinets";
+import ArcadeGlow from "./ArcadeGlow";
 
 const TERMINAL_POS = [0, 0, -5];
 const REWARD_POS = [0, 1, -3];
 const BRIDGE_END_Z = -34;
 const PORTAL_POS = [0, 1.1, BRIDGE_END_Z + 2];
+const ARCADE_BOUNDS = { minX: -7.3, maxX: 7.3, minZ: -8.3, maxZ: 5.7 };
 
 function Terminal({ position }) {
   const gradientMap = getToonGradientMap();
@@ -39,14 +44,36 @@ function Terminal({ position }) {
 
   return (
     <group position={position}>
-      <mesh position={[0, 0.5, 0]}>
-        <boxGeometry args={[1, 1, 0.6]} />
+      {/* cabinet body */}
+      <mesh position={[0, 0.75, 0]}>
+        <boxGeometry args={[1.1, 1.5, 0.8]} />
         <meshToonMaterial color="#2f3d5c" gradientMap={gradientMap} />
       </mesh>
-      <mesh position={[0, 0.85, 0.31]}>
-        <planeGeometry args={[0.7, 0.4]} />
+      {/* screen */}
+      <mesh position={[0, 1.15, 0.41]}>
+        <planeGeometry args={[0.8, 0.5]} />
         <meshBasicMaterial color="#8ec9ff" toneMapped={false} />
       </mesh>
+      {/* marquee */}
+      <mesh position={[0, 1.65, 0.2]} rotation={[-0.35, 0, 0]}>
+        <boxGeometry args={[1.15, 0.32, 0.16]} />
+        <meshToonMaterial color="#1c2338" gradientMap={gradientMap} emissive="#8ec9ff" emissiveIntensity={0.55} />
+      </mesh>
+      {/* control panel: joystick + buttons */}
+      <mesh position={[-0.28, 0.92, 0.41]}>
+        <cylinderGeometry args={[0.02, 0.02, 0.16, 6]} />
+        <meshBasicMaterial color="#e0455a" />
+      </mesh>
+      <mesh position={[-0.28, 1.01, 0.41]}>
+        <sphereGeometry args={[0.035, 8, 8]} />
+        <meshBasicMaterial color="#e0455a" />
+      </mesh>
+      {[0.02, 0.2].map((x, i) => (
+        <mesh key={i} position={[x, 0.92, 0.41]}>
+          <cylinderGeometry args={[0.03, 0.03, 0.03, 10]} />
+          <meshBasicMaterial color={i === 0 ? "#4f8fd9" : "#e0b34f"} />
+        </mesh>
+      ))}
     </group>
   );
 }
@@ -63,7 +90,7 @@ export default function WordleZone() {
 
   useEffect(() => {
     useLevelStore.getState().setLevel({
-      bounds: { minX: -7.3, maxX: 7.3, minZ: -8.3, maxZ: 5.7 },
+      bounds: ARCADE_BOUNDS,
       colliders: [{ x: TERMINAL_POS[0], z: TERMINAL_POS[2], radius: 0.75 }],
       spawn: { x: 0, y: 0, z: 5, yaw: 0 },
     });
@@ -114,6 +141,10 @@ export default function WordleZone() {
       <pointLight position={[0, 4, -4]} intensity={0.45} color="#8ec9ff" distance={16} />
 
       <Ground size={16} color="#2a3352" />
+      <ArcadeShell bounds={ARCADE_BOUNDS} />
+      <ArcadeFloor bounds={ARCADE_BOUNDS} />
+      <ArcadeCabinets />
+      <ArcadeGlow bounds={ARCADE_BOUNDS} />
 
       <Pedestal position={[-3, 0, 2]} color="#3a4568" />
       <Terminal position={TERMINAL_POS} />

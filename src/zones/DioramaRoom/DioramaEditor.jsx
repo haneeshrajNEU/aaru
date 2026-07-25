@@ -32,8 +32,8 @@ export default function DioramaEditor() {
   };
 
   return (
-    <div className="modal-backdrop" onClick={closeAndResume}>
-      <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ width: "min(420px, 90vw)" }}>
+    <div className="side-panel-backdrop" onClick={closeAndResume}>
+      <div className="side-panel" onClick={(e) => e.stopPropagation()}>
         <h2>Nudge it into place</h2>
         <div className="modal-body">
           <div style={{ marginBottom: 16 }}>

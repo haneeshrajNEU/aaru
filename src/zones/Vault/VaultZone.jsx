@@ -8,8 +8,14 @@ import { PLAYER_NAME } from "../../config/constants";
 import Ground from "../shared/Ground";
 import Sunflower from "../shared/Sunflower";
 import WiltedField from "../shared/WiltedField";
+import DeadFlowers from "../shared/DeadFlowers";
+import EmberParticles from "../shared/EmberParticles";
+import SkyDome from "../shared/SkyDome";
 import VaultContainer from "./VaultContainer";
 import LetterPickup from "./LetterPickup";
+import RainbowArc from "./RainbowArc";
+import RainbowBridge from "./RainbowBridge";
+import BookStand from "./BookStand";
 
 const SUNFLOWER_POS = [0, 0.2, -9];
 const SLOTS = [
@@ -38,7 +44,13 @@ const SLOTS = [
     color: "#8ec9ff",
   },
 ];
-const LETTER_POS = [3.6, 0, -7.6];
+// The book stand sits near the far end of a long rainbow bridge behind the
+// sunflower (not in the middle of it!); LetterPickup floats just above the
+// open book (its own y is a hover reference, not the book's actual height).
+// The bridge itself keeps going a bit further past the stand and fades
+// into the fog.
+const BOOK_STAND_POS = [0, 0.2, -40];
+const LETTER_POS = [0, 0.9, -40];
 
 export default function VaultZone() {
   const flags = useGameStore((s) => s.flags);
@@ -55,7 +67,7 @@ export default function VaultZone() {
 
   useEffect(() => {
     useLevelStore.getState().setLevel({
-      bounds: { minX: -8, maxX: 8, minZ: -13, maxZ: 7 },
+      bounds: { minX: -8, maxX: 8, minZ: -44, maxZ: 7 },
       colliders: [
         { x: SUNFLOWER_POS[0], z: SUNFLOWER_POS[2], radius: 0.8 },
         ...SLOTS.map((s) => ({ x: s.position[0], z: s.position[2], radius: 0.8 })),
@@ -116,8 +128,13 @@ export default function VaultZone() {
       <directionalLight position={[6, 14, -4]} intensity={1.35} color="#fff0c0" />
       <pointLight position={SUNFLOWER_POS} intensity={0.4} color="#ffd966" distance={14} />
 
-      <Ground size={9} color="#b8a888" position={[0, -0.01, -6]} />
+      <SkyDome bottomColor="#ffe3b0" topColor="#ffb37a" radius={80} />
+
+      <Ground size={50} color="#b8a888" position={[0, -0.01, -20]} />
       <WiltedField center={SUNFLOWER_POS} radius={9} count={140} bloomed={flags.sunflowerBloomed} />
+      <DeadFlowers center={SUNFLOWER_POS} radius={9} count={22} bloomed={flags.sunflowerBloomed} />
+      <EmberParticles center={SUNFLOWER_POS} radius={10} height={5} count={45} bloomed={flags.sunflowerBloomed} />
+      <RainbowArc position={SUNFLOWER_POS} bloomed={flags.sunflowerBloomed} />
 
       {/* entry stub bridge for visual continuity from the previous zone */}
       <mesh position={[0, 0.02, 3.5]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -143,7 +160,13 @@ export default function VaultZone() {
         />
       ))}
 
-      {letterRevealed && <LetterPickup position={LETTER_POS} />}
+      {letterRevealed && (
+        <>
+          <RainbowBridge />
+          <BookStand position={BOOK_STAND_POS} />
+          <LetterPickup position={LETTER_POS} />
+        </>
+      )}
     </>
   );
 }

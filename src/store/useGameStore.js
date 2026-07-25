@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 
 const SAVE_KEY = "aaru-bday-save-v1";
 
-const initialFlags = {
+export const initialFlags = {
   introSeen: false,
   loreBookRead: false,
   dioramasFixed: [false, false, false, false],
@@ -26,6 +26,10 @@ export const useGameStore = create(
   persist(
     (set, get) => ({
       currentZone: "meadow",
+      // Bumped on every setZone call so ZoneManager's remount key changes
+      // even when jumping to the same zone name twice in a row (e.g. two
+      // different dev-tools checkpoints inside the same zone).
+      zoneToken: 0,
       inventory: [],
       flags: { ...initialFlags },
       questText: `Explore the meadow, ${""}`,
@@ -37,7 +41,7 @@ export const useGameStore = create(
       },
       transitioning: false,
 
-      setZone: (zone) => set({ currentZone: zone }),
+      setZone: (zone) => set((state) => ({ currentZone: zone, zoneToken: state.zoneToken + 1 })),
 
       setTransitioning: (val) => set({ transitioning: val }),
 

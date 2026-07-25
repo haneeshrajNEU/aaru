@@ -115,15 +115,19 @@ export default function PlayerController() {
   );
 
   // Release pointer lock whenever any overlay opens; clear keys so the
-  // player doesn't keep "walking" while a modal is up.
+  // player doesn't keep "walking" while a modal is up. Calling unlock()
+  // unconditionally (instead of gating on controlsRef.current?.isLocked)
+  // is deliberate: exitPointerLock() is a harmless no-op if nothing is
+  // locked, and gating on the cached `isLocked` flag risks silently
+  // skipping the real exit call if that flag ever lags behind the
+  // browser's actual pointer-lock state — which is exactly what left the
+  // camera still spinning under the bowling/diorama slider panels.
   useEffect(
     () =>
       useUIStore.subscribe((state) => {
         const paused = !!(state.modal || state.inventoryOpen || state.settingsOpen || state.dialogue || state.letterOpen);
-        if (paused && controlsRef.current?.isLocked) {
-          controlsRef.current.unlock();
-        }
         if (paused) {
+          controlsRef.current?.unlock();
           move.current = { forward: false, backward: false, left: false, right: false };
         }
       }),
@@ -132,27 +136,21 @@ export default function PlayerController() {
   useEffect(
     () =>
       useDioramaEditStore.subscribe((state) => {
-        if (state.activeIndex !== null && controlsRef.current?.isLocked) {
-          controlsRef.current.unlock();
-        }
+        if (state.activeIndex !== null) controlsRef.current?.unlock();
       }),
     []
   );
   useEffect(
     () =>
       useBowlingStore.subscribe((state) => {
-        if (state.open && controlsRef.current?.isLocked) {
-          controlsRef.current.unlock();
-        }
+        if (state.open) controlsRef.current?.unlock();
       }),
     []
   );
   useEffect(
     () =>
       useWordleStore.subscribe((state) => {
-        if (state.open && controlsRef.current?.isLocked) {
-          controlsRef.current.unlock();
-        }
+        if (state.open) controlsRef.current?.unlock();
       }),
     []
   );
@@ -231,6 +229,15 @@ export default function PlayerController() {
       <PointerLockControls
         ref={controlsRef}
         onLock={() => {
+          // The browser grants pointer lock asynchronously, so it can land
+          // after a modal/overlay has already opened (e.g. the zone's intro
+          // modal appearing right as the lock request resolves). Bounce
+          // straight back out instead of leaving the camera rotatable
+          // underneath the overlay.
+          if (isPaused()) {
+            controlsRef.current?.unlock();
+            return;
+          }
           setLocked(true);
           useUIStore.getState().setPointerLocked(true);
         }}

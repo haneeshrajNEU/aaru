@@ -52,6 +52,7 @@ export default function Diorama({ index, position, label, correctRotation, corre
 
   const nearlyThere =
     !fixed && angularDistance(rotationDeg, correctRotation) < 25 && Math.abs(scale - correctScale) < 0.15;
+  const glowing = fixed || nearlyThere;
 
   return (
     <group position={position}>
@@ -85,7 +86,12 @@ export default function Diorama({ index, position, label, correctRotation, corre
         {/* spotlight */}
         <mesh position={[0, 0.55, -0.15]} rotation={[Math.PI, 0, 0]}>
           <coneGeometry args={[0.16, 0.4, 10]} />
-          <meshToonMaterial color="#fff6d0" gradientMap={gradientMap} emissive="#fff2a0" emissiveIntensity={0.18} />
+          <meshToonMaterial
+            color="#fff6d0"
+            gradientMap={gradientMap}
+            emissive="#fff2a0"
+            emissiveIntensity={fixed ? 0.5 : 0.18}
+          />
         </mesh>
         {/* tiny idols */}
         {[[-0.14, 0.1], [0.12, 0.05], [0, -0.15]].map(([x, z], i) => (
@@ -102,8 +108,13 @@ export default function Diorama({ index, position, label, correctRotation, corre
         ))}
       </group>
 
-      {nearlyThere && (
-        <pointLight position={[0, 1.4, 0]} color="#ffd966" intensity={0.5} distance={3} />
+      {glowing && (
+        <pointLight
+          position={[0, 1.4, 0]}
+          color={fixed ? "#ffe9a8" : "#ffd966"}
+          intensity={fixed ? 0.6 : 0.5}
+          distance={fixed ? 3.6 : 3}
+        />
       )}
     </group>
   );

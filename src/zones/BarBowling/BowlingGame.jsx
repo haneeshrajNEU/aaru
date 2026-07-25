@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import * as THREE from "three";
 import { getToonGradientMap } from "../../systems/toonGradient";
 import { registerInteractable } from "../../systems/interactables";
 import { useBowlingStore } from "../../store/useBowlingStore";
 import { audioManager } from "../../systems/audioManager";
 import Pin from "./Pin";
 import Haneesh from "./Haneesh";
+import LaneDetails from "./LaneDetails";
+import TrajectoryPreview from "./TrajectoryPreview";
+import { computeFinalX, computeKnockRadius, computeRollMs, ROLL_DISTANCE } from "./rollMath";
 
 const PIN_POSITIONS = [
   [-0.48, -6.6], [-0.16, -6.6], [0.16, -6.6], [0.48, -6.6],
@@ -15,7 +17,6 @@ const PIN_POSITIONS = [
   [0, -5.7],
 ];
 const HANEESH_POS = [0, 0, -6.15];
-const ROLL_MS = 1100;
 
 export default function BowlingGame({ origin, bowlingPinsDown, haneeshDefeated, onPinsCleared, onHeadCollected }) {
   const gradientMap = getToonGradientMap();
@@ -51,19 +52,20 @@ export default function BowlingGame({ origin, bowlingPinsDown, haneeshDefeated, 
         rollingRef.current = true;
         audioManager.play("pinHit");
         setBallVisible(true);
-        const finalX = THREE.MathUtils.clamp(state.rollAim * 1.5 + (state.rollPower - 0.5) * 0.4, -0.9, 0.9);
-        const knockRadius = 0.32 + state.rollPower * 0.6;
-        ballAnim.current = { start: performance.now(), finalX, knockRadius };
+        const finalX = computeFinalX(state.rollAim, state.rollPower);
+        const knockRadius = computeKnockRadius(state.rollPower);
+        const duration = computeRollMs(state.rollPower);
+        ballAnim.current = { start: performance.now(), finalX, knockRadius, duration };
       }),
     [mode]
   );
 
   useFrame(() => {
     if (!ballAnim.current || !ballRef.current) return;
-    const { start, finalX } = ballAnim.current;
-    const t = Math.min((performance.now() - start) / ROLL_MS, 1);
+    const { start, finalX, duration } = ballAnim.current;
+    const t = Math.min((performance.now() - start) / duration, 1);
     const eased = 1 - Math.pow(1 - t, 2);
-    ballRef.current.position.set(eased * finalX, 0.14, -eased * 6.6);
+    ballRef.current.position.set(eased * finalX, 0.14, -eased * ROLL_DISTANCE);
     ballRef.current.rotation.x -= 0.35;
 
     if (t >= 1) {
@@ -102,6 +104,9 @@ export default function BowlingGame({ origin, bowlingPinsDown, haneeshDefeated, 
 
   return (
     <group position={origin}>
+      <LaneDetails />
+      <TrajectoryPreview />
+
       {mode === "pins" &&
         PIN_POSITIONS.map((p, i) => <Pin key={i} position={p} down={pinsDown[i]} />)}
 

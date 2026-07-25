@@ -15,7 +15,10 @@ const ZONES = {
 
 export default function ZoneManager() {
   const currentZone = useGameStore((s) => s.currentZone);
+  const zoneToken = useGameStore((s) => s.zoneToken);
   const ZoneComponent = ZONES[currentZone] || MeadowZone;
-  // key forces a clean remount (and instancedMesh/collider reset) per zone.
-  return <ZoneComponent key={currentZone} />;
+  // key forces a clean remount (and instancedMesh/collider reset) every
+  // time the zone changes — including the token, so jumping to the same
+  // zone name twice in a row (e.g. two dev-tools checkpoints) still remounts.
+  return <ZoneComponent key={`${currentZone}-${zoneToken}`} />;
 }

@@ -22,6 +22,7 @@ import DioramaEditor from "./zones/DioramaRoom/DioramaEditor";
 import BowlingAimUI from "./zones/BarBowling/BowlingAimUI";
 import WordlePanel from "./zones/WordleRoom/WordlePanel";
 import FinalLetterModal from "./components/FinalLetterModal";
+import DevTools from "./systems/DevTools";
 
 const ZONE_MUSIC = {
   meadow: "meadow",
@@ -95,6 +96,8 @@ export default function App() {
       <ClickToPlay onClick={() => useUIStore.getState().requestPointerLock()} />
 
       <div className="zone-fade" style={{ opacity: transitioning ? 1 : 0 }} />
+
+      {import.meta.env.DEV && <DevTools />}
     </>
   );
 }

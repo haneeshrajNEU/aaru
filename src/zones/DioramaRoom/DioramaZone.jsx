@@ -11,6 +11,8 @@ import Portal from "../shared/Portal";
 import RewardBurst from "../shared/RewardBurst";
 import LoreBook from "./LoreBook";
 import Diorama from "./Diorama";
+import RoomDecor from "./RoomDecor";
+import MagicDustMotes from "./MagicDustMotes";
 
 const DIORAMAS = [
   { position: [-5, 0, -7.5], label: "Center Stage", correctRotation: 0, correctScale: 1 },
@@ -21,6 +23,7 @@ const DIORAMAS = [
 
 const REWARD_POS = [0, 1, -3];
 const PORTAL_POS = [6.3, 1.1, 4.5];
+const ROOM_BOUNDS = { minX: -7.3, maxX: 7.3, minZ: -9.3, maxZ: 5.7 };
 
 export default function DioramaZone() {
   const flags = useGameStore((s) => s.flags);
@@ -35,7 +38,7 @@ export default function DioramaZone() {
 
   useEffect(() => {
     useLevelStore.getState().setLevel({
-      bounds: { minX: -7.3, maxX: 7.3, minZ: -9.3, maxZ: 5.7 },
+      bounds: ROOM_BOUNDS,
       colliders: [
         { x: -4, z: 3, radius: 0.7 },
         ...DIORAMAS.map((d) => ({ x: d.position[0], z: d.position[2], radius: 0.75 })),
@@ -99,6 +102,9 @@ export default function DioramaZone() {
         <boxGeometry args={[0.3, 4, 15]} />
         <meshToonMaterial color="#d4b48c" gradientMap={gradientMap} />
       </mesh>
+
+      <RoomDecor />
+      <MagicDustMotes bounds={ROOM_BOUNDS} />
 
       <LoreBook position={[-4, 0, 3]} />
 

@@ -31,7 +31,9 @@ export default function Sunflower({ position = [0, 0, 0], bloomed = false, scale
     const t = bloomT.current;
 
     if (headRef.current) {
-      headRef.current.rotation.x = THREE.MathUtils.lerp(1.05, 0.05, t);
+      // At t=1 the head sits near Math.PI/2 so its face points outward
+      // toward the viewer instead of straight up at the sky.
+      headRef.current.rotation.x = THREE.MathUtils.lerp(1.05, Math.PI / 2, t);
       headRef.current.rotation.z = THREE.MathUtils.lerp(0.35, 0, t);
     }
 

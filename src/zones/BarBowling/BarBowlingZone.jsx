@@ -13,7 +13,10 @@ import Portal from "../shared/Portal";
 import Collectible from "../shared/Collectible";
 import BarCounter from "./BarCounter";
 import BowlingGame from "./BowlingGame";
+import BowlingAlleyShell from "./BowlingAlleyShell";
+import LoungeDecor from "./LoungeDecor";
 
+const ROOM_BOUNDS = { minX: -9, maxX: 9, minZ: -6.8, maxZ: 6 };
 const BAR_POS = [-6, 0, 2];
 const LANE_ORIGIN = [4, 0, 3];
 const DROPLET_POS = [
@@ -40,7 +43,7 @@ export default function BarBowlingZone() {
 
   useEffect(() => {
     useLevelStore.getState().setLevel({
-      bounds: { minX: -9, maxX: 9, minZ: -6.8, maxZ: 6 },
+      bounds: ROOM_BOUNDS,
       colliders: [{ x: BAR_POS[0], z: BAR_POS[2], radius: 1.1 }],
       spawn: { x: 0, y: 0, z: 5.5, yaw: 0 },
     });
@@ -87,6 +90,7 @@ export default function BarBowlingZone() {
       <pointLight position={[LANE_ORIGIN[0], 3, LANE_ORIGIN[2] - 3]} intensity={0.4} color="#bfe3ff" distance={12} />
 
       <Ground size={22} color="#3a2f52" />
+      <BowlingAlleyShell bounds={ROOM_BOUNDS} />
 
       {/* lane strip */}
       <mesh position={[LANE_ORIGIN[0], 0.01, LANE_ORIGIN[2] - 3.3]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -95,6 +99,7 @@ export default function BarBowlingZone() {
       </mesh>
 
       <BarCounter position={BAR_POS} />
+      <LoungeDecor barPosition={BAR_POS} />
 
       <BowlingGame
         origin={LANE_ORIGIN}
