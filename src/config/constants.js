@@ -26,12 +26,18 @@ export const HANEESH_INTRO_LINES = [
 // Placeholder — Claude/whoever builds this can drop the real personalized
 // birthday note in here. Supports plain text with blank lines for paragraphs.
 export const BIRTHDAY_LETTER = {
-  heading: "For Aarushi,",
+  heading: "For Aaru,",
   body: `Happy 25th birthday.
 
-This little world was made just for you — every diorama, every bad pun,
-every pin Haneesh had to take to the face. (This part of the message is a
-placeholder — the real letter goes here.)
+Happy Birthday, Aaru! I'm so so so so so happy that you're a part of my life and I'm so so so so so grateful for you. 
+I'm gonna care for your forever. I know things have been rough lately and I'm sorry that it turned out that way but I promise you
+That things will get better and things will turn out the way you want it. 
+In the moment that you feel like giving up, I want you to remember that I'm always here for you and I will never leave your side.
+In the moment that you feel like you're lost, I'm going to be there for you to guide you to the right path. 
+I will always be there for you to support you and to love you.
+And you always bring a smile to my face and I will always be grateful for that.
+I hope nothing but good health, happiness, and success comes your way. 
+I hope you have a wonderful birthday and I hope you have a wonderful year ahead. I wish I could be there to celebrate with you but I promise you that we will celebrate together soon.
 
 Here's to another year as bright as that sunflower.`,
   signoff: "— with love, always",
