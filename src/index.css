@@ -838,4 +838,5 @@ button {
   text-align: right;
   font-style: italic;
   color: #8a6a4a;
+  white-space: pre-line;
 }

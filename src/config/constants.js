@@ -40,7 +40,7 @@ I hope nothing but good health, happiness, and success comes your way.
 I hope you have a wonderful birthday and I hope you have a wonderful year ahead. I wish I could be there to celebrate with you but I promise you that we will celebrate together soon.
 
 Here's to another year as bright as that sunflower.`,
-  signoff: "— with love, always",
+  signoff: "— with love, always\nYour Hunny",
 };
 
 export const PLAYER_EYE_HEIGHT = 1.65;

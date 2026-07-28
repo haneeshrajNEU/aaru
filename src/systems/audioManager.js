@@ -6,7 +6,7 @@ const ZONE_TRACKS = {
   meadow: "/audio/meadow.mp3",
   diorama: "/audio/diorama.mp3",
   bar: "/audio/bar.mp3",
-  wordle: "/audio/wordle.mp3",
+  wordle: { src: "/audio/bg-arcade.mp3", volume: 0.2 },
   bridge: "/audio/bridge.mp3",
   vault: "/audio/vault.mp3",
 };
@@ -36,10 +36,12 @@ class AudioManager {
   }
 
   _zoneHowl(key) {
-    if (!ZONE_TRACKS[key]) return null;
+    const track = ZONE_TRACKS[key];
+    if (!track) return null;
     if (!this.zoneHowls[key]) {
+      const src = typeof track === "string" ? track : track.src;
       this.zoneHowls[key] = new Howl({
-        src: [ZONE_TRACKS[key]],
+        src: [src],
         loop: true,
         volume: 0,
         html5: true,
@@ -51,9 +53,19 @@ class AudioManager {
     return this.zoneHowls[key];
   }
 
+  // Some zone tracks (e.g. arcade) carry a fixed volume that ignores the
+  // music slider, so they don't get remixed by unrelated settings changes.
+  _zoneTargetVolume(key) {
+    const track = ZONE_TRACKS[key];
+    if (track && typeof track === "object" && typeof track.volume === "number") {
+      return track.volume;
+    }
+    return this.musicVolume;
+  }
+
   setMusicVolume(v) {
     this.musicVolume = v;
-    if (this.current) this.current.volume(v);
+    if (this.current) this.current.volume(this._zoneTargetVolume(this.currentKey));
   }
 
   setSfxVolume(v) {
@@ -75,7 +87,7 @@ class AudioManager {
       try {
         next.volume(0);
         next.play();
-        next.fade(0, this.musicVolume, CROSSFADE_MS);
+        next.fade(0, this._zoneTargetVolume(key), CROSSFADE_MS);
       } catch {
         // ignore — missing/broken audio file
       }
