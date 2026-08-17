@@ -13,6 +13,10 @@ export const LAUNCH_AT_ISO = "2026-07-28T18:30:00.000Z";
 // Swap this out for whatever word you'd like her to solve.
 export const TARGET_WORD = "PENIS";
 
+// Front-door password gate (blocks the whole game until entered once, then
+// remembers it on that device via localStorage). Case-insensitive.
+export const GATE_PASSWORD = "penis";
+
 // Haneesh's little cutscene lines after the pins fall in Zone 2.
 // Feel free to rewrite these — order is preserved, add/remove freely.
 export const HANEESH_INTRO_LINES = [

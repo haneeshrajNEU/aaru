@@ -625,6 +625,74 @@ button {
   opacity: 0.6;
 }
 
+/* ------------------------------------------------------------ Password --- */
+
+.password-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 40%, #2a2340, #14101f);
+}
+
+.password-card {
+  text-align: center;
+  color: #fffaf0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.password-card h1 {
+  font-size: 32px;
+  margin: 0 0 12px;
+  color: var(--sun-pale);
+}
+
+.password-card p {
+  margin: 0 0 24px;
+  opacity: 0.75;
+  font-size: 15px;
+}
+
+.password-card input {
+  font-family: inherit;
+  font-size: 16px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 250, 240, 0.3);
+  background: rgba(255, 250, 240, 0.08);
+  color: #fffaf0;
+  text-align: center;
+  width: 220px;
+}
+
+.password-card input:focus {
+  outline: none;
+  border-color: var(--sun);
+}
+
+.password-card button {
+  font-family: inherit;
+  font-size: 15px;
+  margin-top: 14px;
+  padding: 8px 24px;
+  border-radius: 8px;
+  border: none;
+  background: var(--sun);
+  color: #14101f;
+  cursor: pointer;
+}
+
+.password-error {
+  margin: 12px 0 0 !important;
+  color: var(--pink);
+  font-size: 13px;
+  opacity: 1 !important;
+}
+
 /* --------------------------------------------------------------- Tipsy --- */
 
 .canvas-wrap {
