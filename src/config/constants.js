@@ -15,7 +15,7 @@ export const TARGET_WORD = "PENIS";
 
 // Front-door password gate (blocks the whole game until entered once, then
 // remembers it on that device via localStorage). Case-insensitive.
-export const GATE_PASSWORD = "penis";
+export const GATE_PASSWORD = "peepeepoopoo";
 
 // Haneesh's little cutscene lines after the pins fall in Zone 2.
 // Feel free to rewrite these — order is preserved, add/remove freely.
